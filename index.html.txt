@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de GANTT - Grupo PCCY-Log</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           DISEÑO CORPORATIVO PREMIUM (MODERNO, IMPACTANTE Y CON EFECTOS)
+           ========================================================================== */
+        :root {
+            --bg-body: #0f172a; 
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --text-main: #1e293b; 
+            --text-muted: #475569;
+            --border-color: rgba(226, 232, 240, 0.8);
+            
+            /* Colores de Fases (Más vibrantes) */
+            --color-p1: #3b82f6; /* Azul brillante */
+            --color-p2: #8b5cf6; /* Púrpura eléctrico */
+            --color-p3: #10b981; /* Verde esmeralda vivo */
+            --color-p4: #f97316; /* Naranja fuego */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* Fondo Liquid Glass */
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Orbes líquidos animados de fondo */
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            animation: floatLiquid 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body::before {
+            width: 70vw;
+            height: 70vh;
+            background: rgba(59, 130, 246, 0.35); /* Azul líquido */
+            top: -10%;
+            left: -10%;
+        }
+
+        body::after {
+            width: 60vw;
+            height: 60vh;
+            background: rgba(139, 92, 246, 0.35); /* Púrpura líquido */
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatLiquid {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10%, 15%) scale(1.1); }
+            100% { transform: translate(-5%, 20%) scale(0.9); }
+        }
+
+        /* Contenedor Principal con Glassmorphism (Liquid Glass) */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1550px;
+            background: rgba(255, 255, 255, 0.4); /* Mayor transparencia */
+            backdrop-filter: blur(35px) saturate(150%);
+            -webkit-backdrop-filter: blur(35px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.5);
+            padding: 45px;
+            animation: fadeInContainer 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeInContainer {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================================================
+           CABECERA
+           ========================================================================== */
+        .header-section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .title-area h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .title-area h1 span {
+            background: linear-gradient(135deg, var(--color-p1), var(--color-p2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ==========================================================================
+           ESTRUCTURA DEL GANTT
+           ========================================================================== */
+        .gantt-board {
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.3); /* Cristal intermedio */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: 0 15px 35px -10px rgba(0,0,0,0.1), inset 0 0 0 1px rgba(255,255,255,0.3);
+        }
+
+        .gantt-header-row {
+            display: flex;
+            background: rgba(255, 255, 255, 0.5);
+            border-bottom: 2px solid rgba(226, 232, 240, 0.6);
+        }
+
+        /* Columna Izquierda (Nombres de Tareas) */
+        .task-list-column {
+            width: 480px;
+            min-width: 480px;
+            border-right: 1px solid rgba(226, 232, 240, 0.6);
+            background: rgba(255, 255, 255, 0.3); /* Deja pasar el líquido de fondo */
+            z-index: 10;
+        }
+
+        .task-list-header {
+            padding: 20px 28px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            height: 65px;
+        }
+
+        /* Área Derecha (Línea de Tiempo) */
+        .timeline-column {
+            flex-grow: 1;
+            position: relative;
+            background: transparent;
+        }
+
+        .timeline-months {
+            display: flex;
+            height: 65px;
+            position: relative;
+        }
+
+        .month-block {
+            padding: 15px 0;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-main);
+            text-align: center;
+            border-right: 1px dashed #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .month-block span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ==========================================================================
+           FILAS DEL GANTT Y EFECTOS
+           ========================================================================== */
+        .gantt-body {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .grid-lines {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .grid-line {
+            position: absolute;
+            top: 0; bottom: 0;
+            border-left: 1px dashed #cbd5e1;
+        }
+
+        .gantt-row {
+            display: flex;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideInRow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideInRow {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Efecto Hover en la fila completa */
+        .gantt-row:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+            z-index: 10;
+            transform: scale(1.002);
+        }
+
+        .gantt-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Información de la tarea */
+        .task-info {
+            width: 480px;
+            min-width: 480px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: flex-start;
+            background: transparent;
+            border-right: 1px solid rgba(226, 232, 240, 0.6);
+            transition: transform 0.3s ease;
+        }
+
+        .gantt-row:hover .task-info {
+            transform: translateX(6px);
+        }
+
+        .task-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            font-size: 20px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .gantt-row:hover .task-icon {
+            transform: rotate(5deg) scale(1.1);
+            box-shadow: 0 8px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .task-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-id {
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .task-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.3;
+            margin-bottom: 8px;
+        }
+
+        .task-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .task-desc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .task-desc li {
+            position: relative;
+            padding-left: 14px;
+            margin-bottom: 4px;
+        }
+
+        .task-desc li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            top: 0px;
+            font-size: 16px;
+        }
+
+        /* Colores de los bullets según la fase */
+        .row-delay-1 .task-desc li::before { color: var(--color-p1); }
+        .row-delay-2 .task-desc li::before { color: var(--color-p2); }
+        .row-delay-3 .task-desc li::before { color: var(--color-p3); }
+        .row-delay-4 .task-desc li::before { color: var(--color-p4); }
+
+        /* Área de las barras */
+        .bar-area {
+            flex-grow: 1;
+            position: relative;
+            padding: 24px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Diseño de la Barra Premium (Efecto cápsula líquida) */
+        .gantt-bar {
+            height: 42px;
+            border-radius: 12px; /* Más redondeado */
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            /* Sombras múltiples para efecto líquido 3D */
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.2), 
+                        inset 0 -4px 8px rgba(0,0,0,0.15), 
+                        inset 0 4px 8px rgba(255,255,255,0.4);
+            animation: growBar 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: left;
+            opacity: 0;
+            cursor: default;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Efecto de barras animadas al hacer hover */
+        .gantt-bar:hover {
+            transform: translateY(-4px) scaleY(1.05);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.25), 
+                        inset 0 -4px 8px rgba(0,0,0,0.2), 
+                        inset 0 4px 8px rgba(255,255,255,0.6);
+            filter: brightness(1.15);
+        }
+
+        .gantt-bar:hover .bar-pattern {
+            animation: moveStripes 1s linear infinite;
+        }
+
+        @keyframes moveStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 2rem 0; }
+        }
+
+        .bar-date {
+            font-size: 12px;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            z-index: 2;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .bar-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(
+                45deg, 
+                rgba(255,255,255,0.15) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255,255,255,0.15) 50%, 
+                rgba(255,255,255,0.15) 75%, 
+                transparent 75%, 
+                transparent
+            );
+            background-size: 2rem 2rem;
+            z-index: 1;
+        }
+
+        /* Tooltips */
+        .gantt-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #0f172a;
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 50;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+
+        .gantt-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #0f172a transparent transparent transparent;
+        }
+
+        .gantt-bar:hover .gantt-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ==========================================================================
+           COLORES ESPECÍFICOS POR FASE
+           ========================================================================== */
+        /* P1 */
+        .c-p1 { color: var(--color-p1); }
+        .bg-p1-light { background: #eff6ff; color: var(--color-p1); border: 1px solid #bfdbfe; }
+        .bg-p1-solid { background: var(--color-p1); }
+        .gantt-bar.bg-p1-solid:hover { box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5); }
+
+        /* P2 */
+        .c-p2 { color: var(--color-p2); }
+        .bg-p2-light { background: #f5f3ff; color: var(--color-p2); border: 1px solid #ddd6fe; }
+        .bg-p2-solid { background: var(--color-p2); }
+        .gantt-bar.bg-p2-solid:hover { box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.5); }
+
+        /* P3 */
+        .c-p3 { color: var(--color-p3); }
+        .bg-p3-light { background: #ecfdf5; color: var(--color-p3); border: 1px solid #a7f3d0; }
+        .bg-p3-solid { background: var(--color-p3); }
+        .gantt-bar.bg-p3-solid:hover { box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.5); }
+
+        /* P4 */
+        .c-p4 { color: var(--color-p4); }
+        .bg-p4-light { background: #fff7ed; color: var(--color-p4); border: 1px solid #fed7aa; }
+        .bg-p4-solid { background: var(--color-p4); }
+        .gantt-bar.bg-p4-solid:hover { box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.5); }
+
+        /* ==========================================================================
+           ANIMACIONES DE RETARDO
+           ========================================================================== */
+        @keyframes growBar {
+            0% { transform: scaleX(0); opacity: 0; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+        
+        /* Retardos para las filas */
+        .row-delay-1 { animation-delay: 0.1s; }
+        .row-delay-2 { animation-delay: 0.2s; }
+        .row-delay-3 { animation-delay: 0.3s; }
+        .row-delay-4 { animation-delay: 0.4s; }
+
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <!-- CABECERA PRINCIPAL -->
+    <header class="header-section">
+        <div class="title-area">
+            <h1>Diagrama de GANTT - <span>Grupo P<span style="font-weight: 400;">CC</span>Y-<span style="font-family: 'Caveat', cursive; font-size: 1.3em; font-weight: 700; display: inline-block; padding-right: 8px;">Log</span></span></h1>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR DEL DIAGRAMA -->
+    <div class="gantt-board">
+        
+        <div class="gantt-header-row">
+            <div class="task-list-column">
+                <div class="task-list-header">
+                    <i class="fa-solid fa-layer-group" style="margin-right: 10px; color: var(--color-p1);"></i> FASES DEL PROYECTO
+                </div>
+            </div>
+            <div class="timeline-column">
+                <div class="timeline-months">
+                    <div class="month-block" style="width: 37.5%;">
+                        MARZO <span>11 Mar - 31 Mar</span>
+                    </div>
+                    <div class="month-block" style="width: 53.5%;">
+                        ABRIL <span>1 Abr - 30 Abr</span>
+                    </div>
+                    <div class="month-block" style="width: 9%; border-right: none;">
+                        MAYO <span>1 - 4</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cuerpo del Diagrama -->
+        <div class="gantt-body">
+            
+            <div class="timeline-column" style="position: absolute; left: 480px; right: 0; top: 0; bottom: 0;">
+                <div class="grid-lines">
+                    <div class="grid-line" style="left: 17%;"></div>
+                    <div class="grid-line" style="left: 37.5%;"></div>
+                    <div class="grid-line" style="left: 64%;"></div>
+                    <div class="grid-line" style="left: 91%;"></div>
+                </div>
+            </div>
+
+            <!-- FASE 1 -->
+            <div class="gantt-row row-delay-1">
+                <div class="task-list-column">
+                    <div class="task-info">
+                        <div class="task-icon bg-p1-light"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="task-text">
+                            <span class="task-id c-p1">FASE 1</span>
+                            <span class="task-name">Primeros pasos: Elección del sector y cliente</span>
+                            <div class="task-desc">
+                                <ul>
+                                    <li>Selección estratégica de sector con potencial.</li>
+                                    <li>Captación de un cliente logístico real.</li>
+                                    <li>Enfoque en mejora operativa y reducción de costes.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-area">
+                    <div class="gantt-bar bg-p1-solid delay-1" style="left: 1.8%; width: 35.7%;">
+                        <div class="bar-pattern"></div>
+                        <span class="bar-date">11 Mar</span>
+                        <span class="bar-date">31 Mar</span>
+                        <div class="gantt-tooltip">11 Marzo - 31 Marzo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 2 -->
+            <div class="gantt-row row-delay-2">
+                <div class="task-list-column">
+                    <div class="task-info">
+                        <div class="task-icon bg-p2-light"><i class="fa-solid fa-chart-pie"></i></div>
+                        <div class="task-text">
+                            <span class="task-id c-p2">FASE 2</span>
+                            <span class="task-name">Análisis de la situación actual de la empresa</span>
+                            <div class="task-desc">
+                                <ul>
+                                    <li>Mapeo integral de la cadena de valor.</li>
+                                    <li>Identificación de flujos y cuellos de botella.</li>
+                                    <li>Establecimiento de línea base operativa sólida.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-area">
+                    <div class="gantt-bar bg-p2-solid delay-2" style="left: 37.5%; width: 17.8%;">
+                        <div class="bar-pattern"></div>
+                        <span class="bar-date">31 Mar</span>
+                        <span class="bar-date" style="padding-left:5px;">10 Abr</span>
+                        <div class="gantt-tooltip">31 Marzo - 10 Abril</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 3 -->
+            <div class="gantt-row row-delay-3">
+                <div class="task-list-column">
+                    <div class="task-info">
+                        <div class="task-icon bg-p3-light"><i class="fa-solid fa-leaf"></i></div>
+                        <div class="task-text">
+                            <span class="task-id c-p3">FASE 3</span>
+                            <span class="task-name">Auditoría de sostenibilidad operativa</span>
+                            <div class="task-desc">
+                                <ul>
+                                    <li>Evaluación del impacto ambiental logístico.</li>
+                                    <li>Integración de iniciativas eco-eficientes.</li>
+                                    <li>Reducción de huella de carbono optimizando recursos.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-area">
+                    <div class="gantt-bar bg-p3-solid delay-3" style="left: 55.3%; width: 25%;">
+                        <div class="bar-pattern"></div>
+                        <span class="bar-date">10 Abr</span>
+                        <span class="bar-date">24 Abr</span>
+                        <div class="gantt-tooltip">10 Abril - 24 Abril</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FASE 4 -->
+            <div class="gantt-row row-delay-4">
+                <div class="task-list-column">
+                    <div class="task-info">
+                        <div class="task-icon bg-p4-light"><i class="fa-solid fa-lightbulb"></i></div>
+                        <div class="task-text">
+                            <span class="task-id c-p4">FASE 4</span>
+                            <span class="task-name">Propuesta de mejora y presentación al cliente</span>
+                            <div class="task-desc">
+                                <ul>
+                                    <li>Desarrollo del plan de acción definitivo.</li>
+                                    <li>Creación de soluciones respaldadas por datos.</li>
+                                    <li>Presentación y defensa ante la directiva.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bar-area">
+                    <div class="gantt-bar bg-p4-solid delay-4" style="left: 80.3%; width: 17.8%;">
+                        <div class="bar-pattern"></div>
+                        <span class="bar-date">24 Abr</span>
+                        <span class="bar-date">4 May</span>
+                        <div class="gantt-tooltip">24 Abril - 4 Mayo</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
